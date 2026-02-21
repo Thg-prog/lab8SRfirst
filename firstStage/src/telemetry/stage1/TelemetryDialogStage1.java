@@ -10,8 +10,9 @@ import java.io.File;
 
 /**
  * Первый этап разработки: графический интерфейс с заглушками.
- * Все кнопки и списки работают, но используют тестовые данные.
- * Реальная загрузка файлов не производится.
+ * Выбор файлов вынесен в отдельное диалоговое окно.
+ * Добавлена кнопка для просмотра содержимого выбранных файлов.
+ * Убран список чекбоксов для статистики по параметру.
  */
 public class TelemetryDialogStage1 extends JFrame {
     // Компоненты интерфейса
@@ -20,18 +21,16 @@ public class TelemetryDialogStage1 extends JFrame {
     private JTextArea valueArea;
     private JTextArea statsArea;
 
-    private JTextField txtTmFile;
-    private JTextField txtXmlFile;
-    private JTextField txtDimFile;
+    private JLabel lblTmFile;
+    private JLabel lblXmlFile;
+    private JLabel lblDimFile;
+    private JButton btnSelectFiles;
+    private JButton btnViewFile;
     private JButton btnLoad;
 
-    // Список чекбоксов для общей статистики
+    // Список чекбоксов для общей статистики (единственный список)
     private JList<String> statListGeneral;
     private boolean[] statSelectedGeneral;
-
-    // Список чекбоксов для статистики по параметру
-    private JList<String> statListParam;
-    private boolean[] statSelectedParam;
 
     private JButton btnShowSelected;
     private JButton btnResetStats;
@@ -55,19 +54,10 @@ public class TelemetryDialogStage1 extends JFrame {
             "Code > 8 разрядов"
     };
 
-    // Названия пунктов статистики по параметру (10 пунктов)
-    private static final String[] STAT_ITEMS_PARAM = {
-            "Всего записей параметра",
-            "Long (0)",
-            "Double (1)",
-            "Code (2)",
-            "Point (3)",
-            "Неизвестный тип",
-            "Point < 4 байт",
-            "Point > 4 байт",
-            "Code < 8 разрядов",
-            "Code > 8 разрядов"
-    };
+    // Храним выбранные файлы
+    private String selectedTmFile = "";
+    private String selectedXmlFile = "";
+    private String selectedDimFile = "";
 
     public TelemetryDialogStage1() {
         setTitle("Telemetry Viewer (Этап 1 - Заглушки)");
@@ -82,54 +72,57 @@ public class TelemetryDialogStage1 extends JFrame {
     private void initUI() {
         setLayout(new BorderLayout());
 
-        // ---------- Панель выбора файлов ----------
-        JPanel filePanel = new JPanel(new GridBagLayout());
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(5, 5, 5, 5);
-        gbc.fill = GridBagConstraints.HORIZONTAL;
+        // ---------- Верхняя панель с информацией о файлах и кнопками ----------
+        JPanel topPanel = new JPanel(new BorderLayout());
+        topPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-        gbc.gridx = 0; gbc.gridy = 0;
-        filePanel.add(new JLabel("TM-файл:"), gbc);
-        txtTmFile = new JTextField(30);
-        txtTmFile.setEditable(false);
-        txtTmFile.setText("test. knp");
-        gbc.gridx = 1; gbc.weightx = 1.0;
-        filePanel.add(txtTmFile, gbc);
-        JButton btnTm = new JButton("Обзор...");
-        btnTm.addActionListener(this::chooseTmFile);
-        gbc.gridx = 2; gbc.weightx = 0;
-        filePanel.add(btnTm, gbc);
+        // Панель с информацией о выбранных файлах
+        JPanel fileInfoPanel = new JPanel(new GridLayout(3, 1, 5, 5));
+        fileInfoPanel.setBorder(BorderFactory.createTitledBorder("Выбранные файлы"));
 
-        gbc.gridx = 0; gbc.gridy = 1;
-        filePanel.add(new JLabel("XML-файл:"), gbc);
-        txtXmlFile = new JTextField(30);
-        txtXmlFile.setEditable(false);
-        txtXmlFile.setText("test.xml");
-        gbc.gridx = 1; gbc.weightx = 1.0;
-        filePanel.add(txtXmlFile, gbc);
-        JButton btnXml = new JButton("Обзор...");
-        btnXml.addActionListener(this::chooseXmlFile);
-        gbc.gridx = 2; gbc.weightx = 0;
-        filePanel.add(btnXml, gbc);
+        JPanel tmPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        tmPanel.add(new JLabel("TM-файл:"));
+        lblTmFile = new JLabel("не выбран");
+        lblTmFile.setForeground(Color.GRAY);
+        tmPanel.add(lblTmFile);
+        fileInfoPanel.add(tmPanel);
 
-        gbc.gridx = 0; gbc.gridy = 2;
-        filePanel.add(new JLabel("Размерности:"), gbc);
-        txtDimFile = new JTextField(30);
-        txtDimFile.setEditable(false);
-        txtDimFile.setText("dimens.ion");
-        gbc.gridx = 1; gbc.weightx = 1.0;
-        filePanel.add(txtDimFile, gbc);
-        JButton btnDim = new JButton("Обзор...");
-        btnDim.addActionListener(this::chooseDimFile);
-        gbc.gridx = 2; gbc.weightx = 0;
-        filePanel.add(btnDim, gbc);
+        JPanel xmlPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        xmlPanel.add(new JLabel("XML-файл:"));
+        lblXmlFile = new JLabel("не выбран");
+        lblXmlFile.setForeground(Color.GRAY);
+        xmlPanel.add(lblXmlFile);
+        fileInfoPanel.add(xmlPanel);
 
-        gbc.gridx = 1; gbc.gridy = 3;
+        JPanel dimPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        dimPanel.add(new JLabel("Размерности:"));
+        lblDimFile = new JLabel("не выбран");
+        lblDimFile.setForeground(Color.GRAY);
+        dimPanel.add(lblDimFile);
+        fileInfoPanel.add(dimPanel);
+
+        topPanel.add(fileInfoPanel, BorderLayout.CENTER);
+
+        // Панель с кнопками (три кнопки в ряд)
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 5));
+
+        btnSelectFiles = new JButton("Выбрать файлы...");
+        btnSelectFiles.addActionListener(this::showFileSelectionDialog);
+        buttonPanel.add(btnSelectFiles);
+
+        btnViewFile = new JButton("Просмотреть файл...");
+        btnViewFile.addActionListener(this::showViewFileDialog);
+        btnViewFile.setEnabled(false); // неактивна, пока не выбраны файлы
+        buttonPanel.add(btnViewFile);
+
         btnLoad = new JButton("Загрузить данные (заглушка)");
         btnLoad.addActionListener(this::loadDataActionStub);
-        filePanel.add(btnLoad, gbc);
+        btnLoad.setEnabled(false); // неактивна, пока не выбраны файлы
+        buttonPanel.add(btnLoad);
 
-        add(filePanel, BorderLayout.NORTH);
+        topPanel.add(buttonPanel, BorderLayout.SOUTH);
+
+        add(topPanel, BorderLayout.NORTH);
 
         // ---------- Центральная часть: список параметров и значения ----------
         listModel = new DefaultListModel<>();
@@ -146,21 +139,20 @@ public class TelemetryDialogStage1 extends JFrame {
         splitPane.setDividerLocation(300);
         add(splitPane, BorderLayout.CENTER);
 
-        // ---------- Нижняя панель: два списка чекбоксов и кнопки ----------
+        // ---------- Нижняя панель: один список чекбоксов и кнопки ----------
         JPanel southPanel = new JPanel(new BorderLayout());
 
-        // Панель для двух списков (горизонтально)
-        JPanel listsPanel = new JPanel(new GridLayout(1, 2, 10, 0));
+        // Панель для одного списка статистики
+        JPanel statsPanel = new JPanel(new BorderLayout());
+        statsPanel.setBorder(BorderFactory.createTitledBorder("Общая статистика (заглушка)"));
 
-        // Список общей статистики
-        JPanel generalPanel = new JPanel(new BorderLayout());
-        generalPanel.setBorder(BorderFactory.createTitledBorder("Общая статистика (заглушка)"));
         statSelectedGeneral = new boolean[STAT_ITEMS_GENERAL.length];
-        DefaultListModel<String> generalModel = new DefaultListModel<>();
+        DefaultListModel<String> statModel = new DefaultListModel<>();
         for (String item : STAT_ITEMS_GENERAL) {
-            generalModel.addElement(item);
+            statModel.addElement(item);
         }
-        statListGeneral = new JList<>(generalModel);
+
+        statListGeneral = new JList<>(statModel);
         statListGeneral.setCellRenderer(new CheckBoxListRenderer(statSelectedGeneral));
         statListGeneral.addMouseListener(new MouseAdapter() {
             @Override
@@ -172,60 +164,37 @@ public class TelemetryDialogStage1 extends JFrame {
                 }
             }
         });
-        JScrollPane generalScroll = new JScrollPane(statListGeneral);
-        generalScroll.setPreferredSize(new Dimension(200, 150));
-        generalPanel.add(generalScroll, BorderLayout.CENTER);
-        listsPanel.add(generalPanel);
 
-        // Список статистики по параметру
-        JPanel paramStatPanel = new JPanel(new BorderLayout());
-        paramStatPanel.setBorder(BorderFactory.createTitledBorder("Статистика выбранного параметра (заглушка)"));
-        statSelectedParam = new boolean[STAT_ITEMS_PARAM.length];
-        DefaultListModel<String> paramModel = new DefaultListModel<>();
-        for (String item : STAT_ITEMS_PARAM) {
-            paramModel.addElement(item);
-        }
-        statListParam = new JList<>(paramModel);
-        statListParam.setCellRenderer(new CheckBoxListRenderer(statSelectedParam));
-        statListParam.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                int index = statListParam.locationToIndex(e.getPoint());
-                if (index != -1) {
-                    statSelectedParam[index] = !statSelectedParam[index];
-                    statListParam.repaint();
-                }
-            }
-        });
-        JScrollPane paramScroll = new JScrollPane(statListParam);
-        paramScroll.setPreferredSize(new Dimension(200, 150));
-        paramStatPanel.add(paramScroll, BorderLayout.CENTER);
-        listsPanel.add(paramStatPanel);
+        JScrollPane statScroll = new JScrollPane(statListGeneral);
+        statScroll.setPreferredSize(new Dimension(400, 150));
+        statsPanel.add(statScroll, BorderLayout.CENTER);
 
-        // Панель для кнопок
-        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        // Панель для кнопок под списком статистики
+        JPanel statsButtonPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         btnShowSelected = new JButton("Показать выбранное (заглушка)");
         btnShowSelected.addActionListener(this::showSelectedStub);
-        buttonPanel.add(btnShowSelected);
+        statsButtonPanel.add(btnShowSelected);
 
         btnResetStats = new JButton("Полная статистика (заглушка)");
         btnResetStats.addActionListener(e -> statsArea.setText("Полная статистика (заглушка)\nОбщее количество записей: 12345"));
-        buttonPanel.add(btnResetStats);
+        statsButtonPanel.add(btnResetStats);
+
+        statsPanel.add(statsButtonPanel, BorderLayout.SOUTH);
+
+        southPanel.add(statsPanel, BorderLayout.NORTH);
+
+        // Панель для остальных кнопок (сохранение, очистка)
+        JPanel bottomButtonPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
 
         btnSaveStats = new JButton("Сохранить статистику (заглушка)");
         btnSaveStats.addActionListener(this::saveStatsStub);
-        buttonPanel.add(btnSaveStats);
+        bottomButtonPanel.add(btnSaveStats);
 
         btnClearValues = new JButton("Очистить значения");
         btnClearValues.addActionListener(e -> valueArea.setText(""));
-        buttonPanel.add(btnClearValues);
+        bottomButtonPanel.add(btnClearValues);
 
-        // Сборка нижней панели
-        JPanel controlPanel = new JPanel(new BorderLayout());
-        controlPanel.add(listsPanel, BorderLayout.CENTER);
-        controlPanel.add(buttonPanel, BorderLayout.SOUTH);
-
-        southPanel.add(controlPanel, BorderLayout.NORTH);
+        southPanel.add(bottomButtonPanel, BorderLayout.CENTER);
 
         // Текстовая область для отображения статистики
         statsArea = new JTextArea();
@@ -233,9 +202,67 @@ public class TelemetryDialogStage1 extends JFrame {
         statsArea.setFont(new Font("Monospaced", Font.PLAIN, 12));
         statsArea.setBackground(new Color(240, 240, 240));
         statsArea.setText("Статистика будет здесь (заглушка)");
-        southPanel.add(new JScrollPane(statsArea), BorderLayout.CENTER);
+        southPanel.add(new JScrollPane(statsArea), BorderLayout.SOUTH);
 
         add(southPanel, BorderLayout.SOUTH);
+    }
+
+    /**
+     * Показывает диалог выбора файлов.
+     */
+    private void showFileSelectionDialog(ActionEvent e) {
+        FileSelectionDialog dialog = new FileSelectionDialog(this,
+                selectedTmFile, selectedXmlFile, selectedDimFile);
+        dialog.setVisible(true);
+
+        if (dialog.isConfirmed()) {
+            selectedTmFile = dialog.getTmFile();
+            selectedXmlFile = dialog.getXmlFile();
+            selectedDimFile = dialog.getDimFile();
+
+            // Обновляем отображение
+            updateFileLabels();
+            btnViewFile.setEnabled(true);
+            btnLoad.setEnabled(true);
+        }
+    }
+
+    /**
+     * Показывает диалог для просмотра выбранного файла.
+     */
+    private void showViewFileDialog(ActionEvent e) {
+        ViewFileDialog dialog = new ViewFileDialog(this,
+                selectedTmFile, selectedXmlFile, selectedDimFile);
+        dialog.setVisible(true);
+    }
+
+    /**
+     * Обновляет метки с именами выбранных файлов.
+     */
+    private void updateFileLabels() {
+        if (!selectedTmFile.isEmpty()) {
+            lblTmFile.setText(new File(selectedTmFile).getName());
+            lblTmFile.setForeground(Color.BLACK);
+        } else {
+            lblTmFile.setText("не выбран");
+            lblTmFile.setForeground(Color.GRAY);
+        }
+
+        if (!selectedXmlFile.isEmpty()) {
+            lblXmlFile.setText(new File(selectedXmlFile).getName());
+            lblXmlFile.setForeground(Color.BLACK);
+        } else {
+            lblXmlFile.setText("не выбран");
+            lblXmlFile.setForeground(Color.GRAY);
+        }
+
+        if (!selectedDimFile.isEmpty()) {
+            lblDimFile.setText(new File(selectedDimFile).getName());
+            lblDimFile.setForeground(Color.BLACK);
+        } else {
+            lblDimFile.setText("не выбран");
+            lblDimFile.setForeground(Color.GRAY);
+        }
     }
 
     /**
@@ -262,33 +289,13 @@ public class TelemetryDialogStage1 extends JFrame {
 
     // ---------- Заглушки для обработчиков ----------
 
-    private void chooseTmFile(ActionEvent e) {
-        JFileChooser chooser = new JFileChooser();
-        chooser.setDialogTitle("Выберите TM-файл (заглушка)");
-        if (chooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
-            txtTmFile.setText(chooser.getSelectedFile().getAbsolutePath());
-        }
-    }
-
-    private void chooseXmlFile(ActionEvent e) {
-        JFileChooser chooser = new JFileChooser();
-        chooser.setDialogTitle("Выберите XML-файл (заглушка)");
-        if (chooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
-            txtXmlFile.setText(chooser.getSelectedFile().getAbsolutePath());
-        }
-    }
-
-    private void chooseDimFile(ActionEvent e) {
-        JFileChooser chooser = new JFileChooser();
-        chooser.setDialogTitle("Выберите файл размерностей (заглушка)");
-        if (chooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
-            txtDimFile.setText(chooser.getSelectedFile().getAbsolutePath());
-        }
-    }
-
     private void loadDataActionStub(ActionEvent e) {
         JOptionPane.showMessageDialog(this,
-                "Заглушка: загрузка данных не реализована.",
+                "Заглушка: загрузка данных не реализована.\n\n" +
+                        "Выбраны файлы:\n" +
+                        "TM: " + selectedTmFile + "\n" +
+                        "XML: " + selectedXmlFile + "\n" +
+                        "DIM: " + selectedDimFile,
                 "Заглушка",
                 JOptionPane.INFORMATION_MESSAGE);
         // В реальном коде здесь будет загрузка, а пока заполняем тестовые параметры
@@ -319,14 +326,14 @@ public class TelemetryDialogStage1 extends JFrame {
     }
 
     private void showSelectedStub(ActionEvent e) {
-        // Формируем тестовый текст на основе отмеченных чекбоксов
+        // Формируем тестовый текст на основе отмеченных чекбоксов общей статистики
         StringBuilder sb = new StringBuilder();
         sb.append("Выборочная статистика (заглушка)\n");
         sb.append("================================\n\n");
 
         boolean anySelected = false;
 
-        // Общая статистика
+        // Проверяем все чекбоксы общей статистики
         if (statSelectedGeneral[0]) {
             sb.append("Общее количество записей: 12345\n");
             anySelected = true;
@@ -335,19 +342,49 @@ public class TelemetryDialogStage1 extends JFrame {
             sb.append("Служебные записи: 234\n");
             anySelected = true;
         }
-        // ... остальные пункты можно не перечислять для краткости
-
-        // Статистика параметра (если выбран)
-        if (paramList.getSelectedValue() != null) {
-            String param = paramList.getSelectedValue();
-            if (statSelectedParam[0]) {
-                sb.append("\nВсего записей параметра ").append(param).append(": 42\n");
-                anySelected = true;
-            }
-            if (statSelectedParam[1]) {
-                sb.append("Long для ").append(param).append(": 10\n");
-                anySelected = true;
-            }
+        if (statSelectedGeneral[2]) {
+            sb.append("Полезные записи: 12111\n");
+            anySelected = true;
+        }
+        if (statSelectedGeneral[3]) {
+            sb.append("Записей с неизвестным типом: 56\n");
+            anySelected = true;
+        }
+        if (statSelectedGeneral[4]) {
+            sb.append("Long (0): 5000\n");
+            anySelected = true;
+        }
+        if (statSelectedGeneral[5]) {
+            sb.append("Double (1): 3000\n");
+            anySelected = true;
+        }
+        if (statSelectedGeneral[6]) {
+            sb.append("Code (2): 2500\n");
+            anySelected = true;
+        }
+        if (statSelectedGeneral[7]) {
+            sb.append("Point (3): 1611\n");
+            anySelected = true;
+        }
+        if (statSelectedGeneral[8]) {
+            sb.append("Уникальные параметры: 45\n");
+            anySelected = true;
+        }
+        if (statSelectedGeneral[9]) {
+            sb.append("Point < 4 байт: 200\n");
+            anySelected = true;
+        }
+        if (statSelectedGeneral[10]) {
+            sb.append("Point > 4 байт: 1411\n");
+            anySelected = true;
+        }
+        if (statSelectedGeneral[11]) {
+            sb.append("Code < 8 разрядов: 800\n");
+            anySelected = true;
+        }
+        if (statSelectedGeneral[12]) {
+            sb.append("Code > 8 разрядов: 1700\n");
+            anySelected = true;
         }
 
         if (!anySelected) {
