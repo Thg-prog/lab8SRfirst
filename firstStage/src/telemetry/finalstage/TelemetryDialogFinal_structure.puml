@@ -1,0 +1,480 @@
+@startuml
+
+/' diagram meta data start
+config=StructureConfiguration;
+{
+  "projectClassification": {
+    "searchMode": "OpenProject", // OpenProject, AllProjects
+    "includedProjects": "",
+    "pathEndKeywords": "*.impl",
+    "isClientPath": "",
+    "isClientName": "",
+    "isTestPath": "",
+    "isTestName": "",
+    "isMappingPath": "",
+    "isMappingName": "",
+    "isDataAccessPath": "",
+    "isDataAccessName": "",
+    "isDataStructurePath": "",
+    "isDataStructureName": "",
+    "isInterfaceStructuresPath": "",
+    "isInterfaceStructuresName": "",
+    "isEntryPointPath": "",
+    "isEntryPointName": "",
+    "treatFinalFieldsAsMandatory": false
+  },
+  "graphRestriction": {
+    "classPackageExcludeFilter": "",
+    "classPackageIncludeFilter": "",
+    "classNameExcludeFilter": "",
+    "classNameIncludeFilter": "",
+    "methodNameExcludeFilter": "",
+    "methodNameIncludeFilter": "",
+    "removeByInheritance": "", // inheritance/annotation based filtering is done in a second step
+    "removeByAnnotation": "",
+    "removeByClassPackage": "", // cleanup the graph after inheritance/annotation based filtering is done
+    "removeByClassName": "",
+    "cutMappings": false,
+    "cutEnum": true,
+    "cutTests": true,
+    "cutClient": true,
+    "cutDataAccess": false,
+    "cutInterfaceStructures": false,
+    "cutDataStructures": false,
+    "cutGetterAndSetter": false,
+    "cutConstructors": false
+  },
+  "graphTraversal": {
+    "forwardDepth": 10,
+    "backwardDepth": 12,
+    "classPackageExcludeFilter": "",
+    "classPackageIncludeFilter": "",
+    "classNameExcludeFilter": "",
+    "classNameIncludeFilter": "",
+    "methodNameExcludeFilter": "",
+    "methodNameIncludeFilter": "",
+    "hideMappings": true,
+    "hideDataStructures": false,
+    "hidePrivateMethods": false,
+    "hideInterfaceCalls": true, // indirection: implementation -> interface (is hidden) -> implementation
+    "onlyShowApplicationEntryPoints": false, // root node is included
+    "useMethodCallsForStructureDiagram": "ForwardOnly" // ForwardOnly, BothDirections, No
+  },
+  "details": {
+    "aggregation": "GroupByClass", // ByClass, GroupByClass, None
+    "showClassGenericTypes": true,
+    "showMethods": true,
+    "showMethodParameterNames": true,
+    "showMethodParameterTypes": true,
+    "showMethodReturnType": true,
+    "showPackageLevels": 6,
+    "showDetailedClassStructure": true
+  },
+  "rootClass": "telemetry.finalstage.TelemetryDialogFinal",
+  "extensionCallbackMethod": "" // qualified.class.name#methodName - signature: public static String method(String)
+}
+diagram meta data end '/
+
+
+
+digraph g {
+    rankdir="TB"
+    splines=polyline
+    
+
+'nodes 
+subgraph cluster_1842840760 { 
+   	label=finalstage
+	labeljust=l
+	fillcolor="#ececec"
+	style=filled
+   
+   DatXML572909411[
+	label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="4" CELLSPACING="0">
+<TR><TD ALIGN="LEFT" >(C)DatXML</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >-   paramFullNames: Map&lt;Integer, String&gt; [0..*]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   paramNames: Map&lt;Integer, String&gt; [0..*]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   paramTextValues: Map&lt;Integer, List&lt;String&gt;&gt; [0..*]</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >+ getFullName(number: int): String</TD></TR>
+<TR><TD ALIGN="LEFT" >+ getName(number: int): String</TD></TR>
+<TR><TD ALIGN="LEFT" >+ getTextValues(number: int): List&lt;String&gt;</TD></TR>
+<TR><TD ALIGN="LEFT" >+ load(filename: String)</TD></TR>
+</TABLE>>
+	style=filled
+	margin=0
+	shape=plaintext
+	fillcolor="#FFFFFF"
+];
+
+Dim572909411[
+	label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="4" CELLSPACING="0">
+<TR><TD ALIGN="LEFT" >(C)Dim</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >-   dimensions: Map&lt;Integer, String&gt; [0..*]</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >+ getDimension(code: int): String</TD></TR>
+<TR><TD ALIGN="LEFT" >+ load(filename: String)</TD></TR>
+</TABLE>>
+	style=filled
+	margin=0
+	shape=plaintext
+	fillcolor="#FFFFFF"
+];
+
+FileSelectionDialog572909411[
+	label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="4" CELLSPACING="0">
+<TR><TD ALIGN="LEFT" >(C)FileSelectionDialog</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >-   btnCancel: JButton [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   btnOk: JButton [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   confirmed: boolean [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   dimFile: String [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   tmFile: String [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   txtDimFile: JTextField [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   txtTmFile: JTextField [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   txtXmlFile: JTextField [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   xmlFile: String [0..1]</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >+ FileSelectionDialog(parent: JFrame, initialTm: String, initialXml: String, initialDim: String)</TD></TR>
+<TR><TD ALIGN="LEFT" >- chooseDimFile(e: ActionEvent)</TD></TR>
+<TR><TD ALIGN="LEFT" >- chooseTmFile(e: ActionEvent)</TD></TR>
+<TR><TD ALIGN="LEFT" >- chooseXmlFile(e: ActionEvent)</TD></TR>
+<TR><TD ALIGN="LEFT" >+ getDimFile(): String</TD></TR>
+<TR><TD ALIGN="LEFT" >+ getTmFile(): String</TD></TR>
+<TR><TD ALIGN="LEFT" >+ getXmlFile(): String</TD></TR>
+<TR><TD ALIGN="LEFT" >- initUI()</TD></TR>
+<TR><TD ALIGN="LEFT" >+ isConfirmed(): boolean</TD></TR>
+<TR><TD ALIGN="LEFT" >- onOk(e: ActionEvent)</TD></TR>
+</TABLE>>
+	style=filled
+	margin=0
+	shape=plaintext
+	fillcolor="#FFFFFF"
+];
+
+ReadTMI572909411[
+	label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="4" CELLSPACING="0">
+<TR><TD ALIGN="LEFT" >(C)ReadTMI</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >-   allRecords: List&lt;TmDat&gt; [0..*]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   attribute: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   bytesNum: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   codeGreater8: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   codeLength: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   codeLess8: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   currentByte: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   currentByteHex: String [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   datXML: DatXML [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   dataLength: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   dim: Dim [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   dimensionCode: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   inputStream: InputStream [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   isPointReading: boolean [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   messageType: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   milliseconds: long [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   paramNumber: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   pointData: byte[] [0..*]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   pointDataIndex: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   pointGreater4: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   pointLess4: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   position: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   readingPointData: boolean [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   recordsByName: Map&lt;String, List&lt;TmDat&gt;&gt; [0..*]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   remainingPointBytes: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   serviceRecords: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   tmpString: String [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   totalRecords: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   typeCounts: int[] [0..*]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   unknownRecords: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   usefulRecords: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   valueType: int [1]</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >- addRecord(record: TmDat)</TD></TR>
+<TR><TD ALIGN="LEFT" >- createCodeRecord()</TD></TR>
+<TR><TD ALIGN="LEFT" >- createDoubleRecord()</TD></TR>
+<TR><TD ALIGN="LEFT" >- createLongRecord()</TD></TR>
+<TR><TD ALIGN="LEFT" >- createPointRecord()</TD></TR>
+<TR><TD ALIGN="LEFT" >- createUnknownRecord()</TD></TR>
+<TR><TD ALIGN="LEFT" >- finishPointRecord()</TD></TR>
+<TR><TD ALIGN="LEFT" >+ getAllRecords(): List&lt;TmDat&gt;</TD></TR>
+<TR><TD ALIGN="LEFT" >- getAttributeAndValueType()</TD></TR>
+<TR><TD ALIGN="LEFT" >+ getCodeGreater8(): int</TD></TR>
+<TR><TD ALIGN="LEFT" >+ getCodeLess8(): int</TD></TR>
+<TR><TD ALIGN="LEFT" >- getDimensionAndMessageType()</TD></TR>
+<TR><TD ALIGN="LEFT" >- getDimensionString(): String</TD></TR>
+<TR><TD ALIGN="LEFT" >- getMilliseconds()</TD></TR>
+<TR><TD ALIGN="LEFT" >- getParamName(): String</TD></TR>
+<TR><TD ALIGN="LEFT" >- getParamNumber()</TD></TR>
+<TR><TD ALIGN="LEFT" >+ getPointGreater4(): int</TD></TR>
+<TR><TD ALIGN="LEFT" >+ getPointLess4(): int</TD></TR>
+<TR><TD ALIGN="LEFT" >+ getRecordsByName(): Map&lt;String, List&lt;TmDat&gt;&gt;</TD></TR>
+<TR><TD ALIGN="LEFT" >+ getServiceRecords(): int</TD></TR>
+<TR><TD ALIGN="LEFT" >+ getTotalRecords(): int</TD></TR>
+<TR><TD ALIGN="LEFT" >+ getTypeCounts(): int[]</TD></TR>
+<TR><TD ALIGN="LEFT" >+ getUnknownRecords(): int</TD></TR>
+<TR><TD ALIGN="LEFT" >+ getUsefulRecords(): int</TD></TR>
+<TR><TD ALIGN="LEFT" >- getValue()</TD></TR>
+<TR><TD ALIGN="LEFT" >- isSystemMessage(): boolean</TD></TR>
+<TR><TD ALIGN="LEFT" >+ load(filename: String, dim: Dim, datXML: DatXML)</TD></TR>
+<TR><TD ALIGN="LEFT" >- processCode()</TD></TR>
+<TR><TD ALIGN="LEFT" >- processDouble()</TD></TR>
+<TR><TD ALIGN="LEFT" >- processLong()</TD></TR>
+<TR><TD ALIGN="LEFT" >- processPoint()</TD></TR>
+<TR><TD ALIGN="LEFT" >- processPointDataByte()</TD></TR>
+<TR><TD ALIGN="LEFT" >- processServiceMessage()</TD></TR>
+<TR><TD ALIGN="LEFT" >- processUnknown()</TD></TR>
+<TR><TD ALIGN="LEFT" >- processUsefulRecord()</TD></TR>
+<TR><TD ALIGN="LEFT" >- readByte(): int</TD></TR>
+<TR><TD ALIGN="LEFT" >- resetForNextRecord()</TD></TR>
+</TABLE>>
+	style=filled
+	margin=0
+	shape=plaintext
+	fillcolor="#FFFFFF"
+];
+
+TelemetryDialogFinal572909411[
+	label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="4" CELLSPACING="0">
+<TR><TD ALIGN="LEFT" >(C)TelemetryDialogFinal</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >-   btnClearValues: JButton [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   btnLoad: JButton [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   btnResetStats: JButton [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   btnSaveStats: JButton [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   btnSelectFiles: JButton [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   btnShowSelected: JButton [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   btnViewFile: JButton [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   datXML: DatXML [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   dim: Dim [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   lblDimFile: JLabel [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   lblTmFile: JLabel [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   lblXmlFile: JLabel [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   listModel: DefaultListModel&lt;String&gt; [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   paramList: JList&lt;String&gt; [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   reader: ReadTMI [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   selectedDimFile: String [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   selectedTmFile: String [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   selectedXmlFile: String [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   statListGeneral: JList&lt;String&gt; [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   statSelectedGeneral: boolean[] [0..*]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   statsArea: JTextArea [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   valueArea: JTextArea [0..1]</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >+ TelemetryDialogFinal()</TD></TR>
+<TR><TD ALIGN="LEFT" >- buildStatistics()</TD></TR>
+<TR><TD ALIGN="LEFT" >- initUI()</TD></TR>
+<TR><TD ALIGN="LEFT" >- loadDataAction(e: ActionEvent)</TD></TR>
+<TR><TD ALIGN="LEFT" >+ main(args: String[])</TD></TR>
+<TR><TD ALIGN="LEFT" >- paramSelected(e: ListSelectionEvent)</TD></TR>
+<TR><TD ALIGN="LEFT" >- saveCurrentStatistics(e: ActionEvent)</TD></TR>
+<TR><TD ALIGN="LEFT" >- showFileSelectionDialog(e: ActionEvent)</TD></TR>
+<TR><TD ALIGN="LEFT" >- showSelectedStatistics(e: ActionEvent)</TD></TR>
+<TR><TD ALIGN="LEFT" >- showViewFileDialog(e: ActionEvent)</TD></TR>
+<TR><TD ALIGN="LEFT" >- updateFileLabels()</TD></TR>
+<TR><TD ALIGN="LEFT" >- updateStatsPlaceholder()</TD></TR>
+<TR><TD ALIGN="LEFT" >- updateUIAfterLoad()</TD></TR>
+</TABLE>>
+	style=filled
+	margin=0
+	shape=plaintext
+	fillcolor="#FFFFFF"
+];
+
+TmCode572909411[
+	label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="4" CELLSPACING="0">
+<TR><TD ALIGN="LEFT" >(C)TmCode</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >-   codeLength: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   codeValue: int [1]</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >+ getCodeLength(): int</TD></TR>
+<TR><TD ALIGN="LEFT" >+ getCodeValue(): int</TD></TR>
+<TR><TD ALIGN="LEFT" >+ getValueAsString(): String</TD></TR>
+<TR><TD ALIGN="LEFT" >+ setCodeLength(codeLength: int)</TD></TR>
+<TR><TD ALIGN="LEFT" >+ setCodeValue(codeValue: int)</TD></TR>
+</TABLE>>
+	style=filled
+	margin=0
+	shape=plaintext
+	fillcolor="#FFFFFF"
+];
+
+TmDat572909411[
+	label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="4" CELLSPACING="0">
+<TR><TD ALIGN="LEFT" >(C)TmDat</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >#   attribute: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >#   dimension: String [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >#   name: String [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >#   number: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >#   time: long [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >#   valueType: int [1]</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >+ compareTo(other: TmDat): int</TD></TR>
+<TR><TD ALIGN="LEFT" >+ formatTime(millis: long): String</TD></TR>
+<TR><TD ALIGN="LEFT" >+ getAttribute(): int</TD></TR>
+<TR><TD ALIGN="LEFT" >+ getDimension(): String</TD></TR>
+<TR><TD ALIGN="LEFT" >+ getName(): String</TD></TR>
+<TR><TD ALIGN="LEFT" >+ getNumber(): int</TD></TR>
+<TR><TD ALIGN="LEFT" >+ getTime(): long</TD></TR>
+<TR><TD ALIGN="LEFT" >+ getValueAsString(): String</TD></TR>
+<TR><TD ALIGN="LEFT" >+ getValueType(): int</TD></TR>
+<TR><TD ALIGN="LEFT" >+ setAttribute(attribute: int)</TD></TR>
+<TR><TD ALIGN="LEFT" >+ setDimension(dimension: String)</TD></TR>
+<TR><TD ALIGN="LEFT" >+ setName(name: String)</TD></TR>
+<TR><TD ALIGN="LEFT" >+ setNumber(number: int)</TD></TR>
+<TR><TD ALIGN="LEFT" >+ setTime(time: long)</TD></TR>
+<TR><TD ALIGN="LEFT" >+ setValueType(valueType: int)</TD></TR>
+</TABLE>>
+	style=filled
+	margin=0
+	shape=plaintext
+	fillcolor="#FFFFFF"
+];
+
+TmDouble572909411[
+	label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="4" CELLSPACING="0">
+<TR><TD ALIGN="LEFT" >(C)TmDouble</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >-   value: double [1]</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >+ getValue(): double</TD></TR>
+<TR><TD ALIGN="LEFT" >+ getValueAsString(): String</TD></TR>
+<TR><TD ALIGN="LEFT" >+ setValue(value: double)</TD></TR>
+</TABLE>>
+	style=filled
+	margin=0
+	shape=plaintext
+	fillcolor="#FFFFFF"
+];
+
+TmLong572909411[
+	label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="4" CELLSPACING="0">
+<TR><TD ALIGN="LEFT" >(C)TmLong</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >-   value: int [1]</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >+ getValue(): int</TD></TR>
+<TR><TD ALIGN="LEFT" >+ getValueAsString(): String</TD></TR>
+<TR><TD ALIGN="LEFT" >+ setValue(value: int)</TD></TR>
+</TABLE>>
+	style=filled
+	margin=0
+	shape=plaintext
+	fillcolor="#FFFFFF"
+];
+
+TmPoint572909411[
+	label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="4" CELLSPACING="0">
+<TR><TD ALIGN="LEFT" >(C)TmPoint</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >-   data: byte[] [0..*]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   dataLength: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   elementSize: int [1]</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >+ getData(): byte[]</TD></TR>
+<TR><TD ALIGN="LEFT" >+ getDataLength(): int</TD></TR>
+<TR><TD ALIGN="LEFT" >+ getElementSize(): int</TD></TR>
+<TR><TD ALIGN="LEFT" >+ getValueAsString(): String</TD></TR>
+<TR><TD ALIGN="LEFT" >+ setData(data: byte[])</TD></TR>
+<TR><TD ALIGN="LEFT" >+ setDataLength(dataLength: int)</TD></TR>
+<TR><TD ALIGN="LEFT" >+ setElementSize(elementSize: int)</TD></TR>
+</TABLE>>
+	style=filled
+	margin=0
+	shape=plaintext
+	fillcolor="#FFFFFF"
+];
+
+TmUnknown572909411[
+	label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="4" CELLSPACING="0">
+<TR><TD ALIGN="LEFT" >(C)TmUnknown</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >-   rawData: byte[] [0..*]</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >+ getValueAsString(): String</TD></TR>
+<TR><TD ALIGN="LEFT" >+ setRawData(rawData: byte[])</TD></TR>
+</TABLE>>
+	style=filled
+	margin=0
+	shape=plaintext
+	fillcolor="#FFFFFF"
+];
+
+ViewFileDialog572909411[
+	label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="4" CELLSPACING="0">
+<TR><TD ALIGN="LEFT" >(C)ViewFileDialog</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >-   btnRefresh: JButton [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   contentArea: JTextArea [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   dimFile: String [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   fileTypeCombo: JComboBox&lt;String&gt; [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   reader: ReadTMI [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   tmFile: String [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   xmlFile: String [0..1]</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >+ ViewFileDialog(parent: JFrame, tmFile: String, xmlFile: String, dimFile: String)</TD></TR>
+<TR><TD ALIGN="LEFT" >+ ViewFileDialog(parent: JFrame, tmFile: String, xmlFile: String, dimFile: String, reader: ReadTMI)</TD></TR>
+<TR><TD ALIGN="LEFT" >- initUI()</TD></TR>
+<TR><TD ALIGN="LEFT" >- onFileTypeChanged(e: ActionEvent)</TD></TR>
+<TR><TD ALIGN="LEFT" >- updateContent()</TD></TR>
+<TR><TD ALIGN="LEFT" >- viewTextFileContent(sb: StringBuilder, filePath: String, maxLines: int)</TD></TR>
+<TR><TD ALIGN="LEFT" >- viewTmFileContent(sb: StringBuilder, filePath: String)</TD></TR>
+</TABLE>>
+	style=filled
+	margin=0
+	shape=plaintext
+	fillcolor="#FFFFFF"
+];
+
+subgraph cluster_711473819 { 
+   	label=TelemetryDialogFinal
+	labeljust=l
+	fillcolor="#d8d8d8"
+	style=filled
+   
+   CheckBoxListRenderer1966191718[
+	label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="4" CELLSPACING="0">
+<TR><TD ALIGN="LEFT" >(C)CheckBoxListRenderer</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >-   selected: boolean[] [0..*]</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >+ CheckBoxListRenderer(selected: boolean[])</TD></TR>
+<TR><TD ALIGN="LEFT" >+ getListCellRendererComponent(list: JList&lt;? extends String&gt;, value: String, index: int, isSelected: boolean, cellHasFocus: boolean): Component</TD></TR>
+</TABLE>>
+	style=filled
+	margin=0
+	shape=plaintext
+	fillcolor="#FFFFFF"
+];
+} 
+} 
+
+'edges    
+ReadTMI572909411 -> DatXML572909411[label="datXML
+[0..1]"];
+ReadTMI572909411 -> Dim572909411[label="dim
+[0..1]"];
+ReadTMI572909411 -> TmDat572909411[label="allRecords
+[0..*]"];
+ReadTMI572909411 -> TmDat572909411[label="recordsByName
+[0..*]"];
+TelemetryDialogFinal572909411 -> CheckBoxListRenderer1966191718[label="initUI() -> CheckBoxListRenderer()"];
+TelemetryDialogFinal572909411 -> DatXML572909411[label="datXML
+[0..1]"];
+TelemetryDialogFinal572909411 -> Dim572909411[label="dim
+[0..1]"];
+TelemetryDialogFinal572909411 -> ReadTMI572909411[label="reader
+[0..1]"];
+TmDat572909411 -> TmCode572909411[arrowhead=none, arrowtail=empty, dir=both];
+TmDat572909411 -> TmDouble572909411[arrowhead=none, arrowtail=empty, dir=both];
+TmDat572909411 -> TmLong572909411[arrowhead=none, arrowtail=empty, dir=both];
+TmDat572909411 -> TmPoint572909411[arrowhead=none, arrowtail=empty, dir=both];
+TmDat572909411 -> TmUnknown572909411[arrowhead=none, arrowtail=empty, dir=both];
+ViewFileDialog572909411 -> ReadTMI572909411[label="reader
+[0..1]"];
+    
+}
+@enduml
